@@ -1,0 +1,60 @@
+﻿README for NNVL OISST Anomaly image re-projection
+
+Abstract:
+The scripts are contained in this project re-project NNVL OISST Anomaly
+CED images onto a map (Hammer-Aitoff, equidistant cylindrical, 
+or Robinson). The source images currently reside at:
+
+Monthly OISSTA: ftp://ftp.nnvl.noaa.gov/View/SSTA/Images/Color/Monthly/
+Annual OISSTA: ftp://ftp.nnvl.noaa.gov/View/ANOM/Images/Color/Yearly/
+
+
+Program Usage:
+
+The program oisstamaindriver.py will download the latest (previous month) CED image from the
+NNVL ftp site, process all of the DS maps, and upload them to the AWS server. Alternatively, this driver
+can also be used to process any month by simply passing in a date string as an argument of the form:
+"201603" 
+
+
+Software and Dependencies:
+
+The scripts included here were built for Python 2.7. The following
+modules must exist on the system for them to perform correctly:
+
+matplotlib-1.1.1 (or higher)
+PIL (python imaging library, 1.1.7 or higher, PIL is the Python Imaging Library)
+mpl_toolkits.basemap
+numpy
+urllib
+shapefile
+sys
+os
+subprocess
+time
+matplotlib.font_manager (in order to utilize the true type font MS Trebuchet, which is not
+	included as a "base" font in python*)
+	*The usage of PIL and the font manager inside matplotlib in these scripts requires
+	the ability to utilize true type fonts. As such for example on a linux box, one would
+	need to have installed the freetype-dev packages. Specifically, libfreetype6-dev needs
+	to be installed on ubuntu... 
+
+Other files in this project:
+colorbar and logo (.png and .eps) files included here are sized for each of the image 
+sizes and are used by the various python scripts that produce the reprojected images
+
+
+
+Notes on portability:
+
+1) All image making scripts in the project need the path to Trebuchet MS true-type font.
+e.g.,
+
+	/usr/local/share/fonts/truetype/msttcorefonts/Trebuchet_MS.ttf
+
+	*This path depends entirely on the location the sysadmin installs “add-on” fonts.
+
+2) The two mapping routines (oissta_monthly_map.py and oissta_yearly_map.py) require the path
+to the original images, e.g., 
+
+	 /NNVL_OISSTA/Images/Monthly/Orig
