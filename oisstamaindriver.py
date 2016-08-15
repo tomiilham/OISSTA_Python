@@ -42,7 +42,7 @@ if __name__ == '__main__':
 		for i in xrange(len(isz)):
 			cmd = 'python oissta_monthly_driver.py '+stryyyy+strmm+' '+isz[i]
 			subprocess.call(cmd, shell=True)
-		cmd = "./UploadDsImages.csh"
+		cmd = "UploadMonthlyOISSTImages.csh"
 		subprocess.call(cmd, shell=True)
 
 	if(len(sys.argv) == 2):
