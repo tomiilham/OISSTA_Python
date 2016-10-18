@@ -39,16 +39,16 @@ imgsize = sys.argv[2]  #(expects 620, 1000, DIY, HD, or HDSD)
 
 #Define the path to the original images
 if(mm != '00'):
-	path2orig = '/Users/belcher/Desktop/NOAA_CSC/NNVL_OISSTA/Images/Monthly/Orig/'
+	path2orig = './Images/Monthly/Orig/'
 	infile = glob.glob(path2orig+'SSTA.monthly.*'+yyyy+mm+'*.color.png')[0]
 
 
 
 outpng = './temporary_map.png'
 
-path = '/usr/local/share/fonts/truetype/msttcorefonts/Trebuchet_MS.ttf'
+path = './Fonts/Trebuchet_MS.ttf'
 propr = font_manager.FontProperties(fname=path)
-path = '/usr/local/share/fonts/truetype/msttcorefonts/Trebuchet_MS_Bold.ttf'
+path = './Fonts/Trebuchet_MS_Bold.ttf'
 propb = font_manager.FontProperties(fname=path)
 
 

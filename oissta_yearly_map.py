@@ -36,7 +36,7 @@ imgsize = sys.argv[2]  #(expects 620, 1000, DIY, HD, or HDSD)
 
 if(yyyy != '0000'):
 	#Define the path to the original images
-	path2orig = '/Users/belcher/Desktop/NOAA_CSC/NNVL_OISSTA/Images/Yearly/Orig/'
+	path2orig = './Images/Yearly/Orig/'
 	infile = glob.glob(path2orig+'SSTA.yearly.*'+yyyy+'*.color.png')[0]
 
 
@@ -44,9 +44,9 @@ if(yyyy != '0000'):
 
 outpng = './temporary_map.png'
 
-path = '/usr/local/share/fonts/truetype/msttcorefonts/Trebuchet_MS.ttf'
+path = './Fonts/Trebuchet_MS.ttf'
 propr = font_manager.FontProperties(fname=path)
-path = '/usr/local/share/fonts/truetype/msttcorefonts/Trebuchet_MS_Bold.ttf'
+path = './Fonts/Trebuchet_MS_Bold.ttf'
 propb = font_manager.FontProperties(fname=path)
 
 

@@ -5,7 +5,7 @@ mpl.use('Agg')
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-import os, datetime, sys, subprocess
+import os, datetime, sys, subprocess, glob, time
 import numpy as np
 #import _imaging
 
@@ -20,18 +20,18 @@ imgsize = sys.argv[2]  #(expects 620, 1000, DIY, HD, or HDSD )
 if(imgsize != 'DIY'): figdpi = 72
 if(imgsize == 'DIY'): figdpi = 300
 
-cmd = "/usr/bin/python ./oissta_yearly_map.py "+fdate+" "+imgsize
+cmd = "python ./oissta_yearly_map.py "+fdate+" "+imgsize
 subprocess.call(cmd,shell=True)
 
 if(imgsize == '620' or imgsize == '1000' or imgsize == 'DIY'):
-	cmd = "/usr/bin/python ./oissta_yearly_colorbar.py "+fdate+" "+imgsize
+	cmd = "python ./oissta_yearly_colorbar.py "+fdate+" "+imgsize
 	subprocess.call(cmd,shell=True)
 
-if not os.path.isdir('../Images/Yearly'):
-	cmd = 'mkdir ../Images/Yearly'
+if not os.path.isdir('./Images/Yearly'):
+	cmd = 'mkdir ./Images/Yearly'
 	subprocess.call(cmd,shell=True)
-if not os.path.isdir('../Images/Yearly/'+imgsize):
-	cmd = 'mkdir ../Images/Yearly/'+imgsize.lower()
+if not os.path.isdir('./Images/Yearly/'+imgsize):
+	cmd = 'mkdir ./Images/Yearly/'+imgsize.lower()
 	subprocess.call(cmd,shell=True)
 
 
@@ -43,7 +43,7 @@ if(imgsize == '620' or imgsize == '1000'):
 	im3.paste(im1, (0,0))
 	imgw = str(im3.size[0])
 	imgh = str(im3.size[1])
-	img_path = '../Images/Yearly/'+imgsize+'/'
+	img_path = './Images/Yearly/'+imgsize+'/'
 	img_name = 'oissta-annual-nnvl--'+imgw+'x'+imgh+'--'+yyyy+'-00-00.png'
 	pngfile = img_path+img_name
 	print "Saving "+pngfile
@@ -55,15 +55,23 @@ if(imgsize == 'DIY'):
 	imgs = Image.open(im1)
 	imgw = str(imgs.size[0])
 	imgh = str(imgs.size[1])
-	img_path = '../Images/Yearly/'+imgsize.lower()+'/'
+	img_path = './Images/Yearly/'+imgsize.lower()+'/'
 	img_name = 'oissta-annual-nnvl--'+imgw+'x'+imgh+'--'+yyyy+'-00-00.png'
+	tifimg_name = 'oissta-annual-nnvl--'+imgw+'x'+imgh+'--'+yyyy+'-00-00.tif'
 	cmd = 'mv '+im1+' '+img_name
 	subprocess.call(cmd,shell=True)
 	im2 = "./temporary_cbar.eps"
 	cbar_name = 'oissta-annual-nnvl--'+yyyy+'-00-00_colorbar.eps'
 	cmd = 'mv '+im2+' '+cbar_name
 	subprocess.call(cmd,shell=True)
-	cmd1 = 'zip oissta-annual-nnvl--'+imgw+'x'+imgh+'--'+yyyy+'-00-00.zip '+img_name+' '+cbar_name+' noaa_logo.eps '
+	cwd = os.getcwd()
+	origfile = glob.glob(cwd+'/Images/Yearly/Orig/SSTA.yearly.*'+yyyy+'*.color.png')[0]
+	cmd = 'gdal_translate -of GTiff -co COMPRESS=LZW -ot Byte -scale -a_srs WGS84 -a_ullr -180.0000 90.0000 180.0000 -90.0000 '+origfile+' tmp.tif'
+	subprocess.call(cmd,shell=True)
+	time.sleep(5)#need a pause as the zip command was blanking out the geotif
+	cmd = 'mv tmp.tif '+tifimg_name	
+	subprocess.call(cmd,shell=True)
+	cmd1 = 'zip oissta-annual-nnvl--'+imgw+'x'+imgh+'--'+yyyy+'-00-00.zip '+img_name+' '+tifimg_name+' '+cbar_name+' noaa_logo.eps '
 	subprocess.call(cmd1,shell=True)
 	cmd2 = 'mv oissta-annual-nnvl--'+imgw+'x'+imgh+'--'+yyyy+'-00-00.zip '+img_path
 	subprocess.call(cmd2,shell=True)
@@ -75,7 +83,7 @@ if(imgsize == 'HD'):
 	imgw = str(im1.size[0])
 	imgh = str(im1.size[1])
 	draw = ImageDraw.Draw(im1)
-	fntpath = '/usr/local/share/fonts/truetype/msttcorefonts/Trebuchet_MS.ttf'
+	fntpath = './Fonts/Trebuchet_MS.ttf'
 	if(yyyy != '0000'):
 		fnt1 = ImageFont.truetype(fntpath, 25)
 		draw.text((224,810), yyyy, (0,0,0), font=fnt1)
@@ -106,7 +114,7 @@ if(imgsize == 'HD'):
 	draw.polygon([(630,955), (615,945), (630,935)], fill="black", outline="black")
 	draw.polygon([(1285,955), (1300,945), (1285,935)], fill="black", outline="black")
 	
-	img_path = '../Images/Yearly/'+imgsize.lower()+'/'
+	img_path = './Images/Yearly/'+imgsize.lower()+'/'
 	img_name = 'oissta-annual-nnvl--'+imgw+'x'+imgh+'hd--'+yyyy+'-00-00.png'
 	pngfile = img_path+img_name
 	print "Saving "+pngfile
@@ -118,7 +126,7 @@ if(imgsize == 'HDSD'):
 	imgw = str(im1.size[0])
 	imgh = str(im1.size[1])
 	draw = ImageDraw.Draw(im1)
-	fntpath = '/usr/local/share/fonts/truetype/msttcorefonts/Trebuchet_MS.ttf'
+	fntpath = './Fonts/Trebuchet_MS.ttf'
 	if(yyyy != '0000'):
 		fnt1 = ImageFont.truetype(fntpath, 25)
 		draw.text((408,642), yyyy, (0,0,0), font=fnt1)
@@ -149,7 +157,7 @@ if(imgsize == 'HDSD'):
 	draw.polygon([(630,830), (615,820), (630,810)], fill="black", outline="black")
 	draw.polygon([(1285,830), (1300,820), (1285,810)], fill="black", outline="black")
 	
-	img_path = '../Images/Yearly/'+imgsize.lower()+'/'
+	img_path = './Images/Yearly/'+imgsize.lower()+'/'
 	img_name = 'oissta-annual-nnvl--'+imgw+'x'+imgh+'hdsd--'+yyyy+'-00-00.png'
 	pngfile = img_path+img_name
 	print "Saving "+pngfile
